@@ -76,6 +76,12 @@ async function syncStore(callback) {
             }
             if (doc.exists) {
                 globalStore = doc.data();
+                // FIX: Sanitize data to resolve any historical duplicate IDs
+                const wasSanitized = sanitizeCustomerData(globalStore);
+                if (wasSanitized) {
+                    db.collection("crm_data").doc("main").set(globalStore);
+                }
+
                 updateStatus('Cloud Synced', 'var(--success)');
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(globalStore));
                 if (callback) callback();

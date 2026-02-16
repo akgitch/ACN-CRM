@@ -17,8 +17,38 @@
 </head>
 
 <body>
-    <div id="login-screen" class="login-wrapper" style="display: none;">
-        <!-- Login UI will be injected here -->
+    <div id="login-screen" class="login-wrapper"
+        style="display: none; background: radial-gradient(circle at center, #004696, #002d61); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem;">
+        <div class="card"
+            style="width: 100%; max-width: 400px; padding: 2.5rem; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <div
+                style="width: 64px; height: 64px; margin: 0 auto 1.5rem; background: var(--primary); border-radius: 12px; display: grid; place-items: center; padding: 10px;">
+                <svg viewBox="0 0 100 100" style="width: 100%; height: 100%;">
+                    <circle cx="50" cy="60" r="32" fill="none" stroke="white" stroke-width="5" />
+                    <ellipse cx="50" cy="60" rx="12" ry="32" fill="none" stroke="white" stroke-width="5" />
+                    <line x1="18" y1="60" x2="82" y2="60" stroke="white" stroke-width="5" />
+                    <path d="M30 35 Q50 15 70 35" fill="none" stroke="#F36F21" stroke-width="8"
+                        stroke-linecap="round" />
+                </svg>
+            </div>
+            <h2 style="font-size: 1.75rem; font-weight: 800; color: var(--primary); margin-bottom: 0.25rem;">Welcome
+                <span style="color: var(--accent);">Back</span></h2>
+            <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 2rem;">ACN Broadband Management
+                Portal</p>
+
+            <div style="text-align: left;">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="username" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Enter password">
+                </div>
+                <button class="btn btn-primary" id="login-btn"
+                    style="width: 100%; padding: 0.875rem; font-size: 1rem; margin-top: 1rem;">Sign In</button>
+            </div>
+        </div>
     </div>
 
     <div id="app" class="app-container" style="display: none;">
@@ -26,10 +56,17 @@
 
         <div class="mobile-header">
             <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <div class="logo-icon" style="width: 24px; height: 24px;">
-                    <i data-lucide="wifi" style="width: 14px; height: 14px;"></i>
+                <div style="width: 24px; height: 24px;">
+                    <svg viewBox="0 0 100 100" style="width: 100%; height: 100%;">
+                        <circle cx="50" cy="60" r="32" fill="none" stroke="var(--primary)" stroke-width="6" />
+                        <ellipse cx="50" cy="60" rx="12" ry="32" fill="none" stroke="var(--primary)" stroke-width="6" />
+                        <line x1="18" y1="60" x2="82" y2="60" stroke="var(--primary)" stroke-width="6" />
+                        <path d="M30 35 Q50 15 70 35" fill="none" stroke="var(--warning)" stroke-width="8"
+                            stroke-linecap="round" />
+                    </svg>
                 </div>
-                <h2 style="font-size: 0.875rem; font-weight: 700;">ACN CRM</h2>
+                <h2 style="font-size: 0.875rem; font-weight: 700; color: var(--primary);">ACN <span
+                        style="color: var(--warning);">BROADBAND</span></h2>
             </div>
             <button class="menu-toggle" id="mobile-toggle">
                 <i data-lucide="menu"></i>
@@ -38,8 +75,19 @@
 
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <div class="logo-icon">
-                    <i data-lucide="wifi"></i>
+                <div class="logo-wrapper" style="width: 40px; height: 40px;">
+                    <svg viewBox="0 0 100 100" style="width: 100%; height: 100%;">
+                        <circle cx="50" cy="60" r="32" fill="none" stroke="var(--primary)" stroke-width="4.5" />
+                        <ellipse cx="50" cy="60" rx="12" ry="32" fill="none" stroke="var(--primary)"
+                            stroke-width="4.5" />
+                        <line x1="18" y1="60" x2="82" y2="60" stroke="var(--primary)" stroke-width="4.5" />
+                        <line x1="50" y1="28" x2="50" y2="92" stroke="var(--primary)" stroke-width="4.5" />
+                        <path d="M30 35 Q50 15 70 35" fill="none" stroke="var(--warning)" stroke-width="6"
+                            stroke-linecap="round" />
+                        <path d="M40 45 Q50 35 60 45" fill="none" stroke="var(--warning)" stroke-width="6"
+                            stroke-linecap="round" />
+                        <circle cx="50" cy="52" r="4" fill="var(--warning)" />
+                    </svg>
                 </div>
                 <h2 style="font-weight: 800; color: var(--primary); letter-spacing: -0.5px; font-size: 1.25rem;">ACN
                     <span style="color: var(--warning);">BROADBAND</span></h2>
