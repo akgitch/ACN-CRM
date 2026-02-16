@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACN Broadband & Mr.OTT | CRM</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Firebase SDK Compat (Required for non-module environment) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div id="login-screen" class="login-wrapper" style="display: none;">
+        <!-- Login UI will be injected here -->
+    </div>
+
+    <div id="app" class="app-container" style="display: none;">
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+        <div class="mobile-header">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div class="logo-icon" style="width: 24px; height: 24px;">
+                    <i data-lucide="wifi" style="width: 14px; height: 14px;"></i>
+                </div>
+                <h2 style="font-size: 0.875rem; font-weight: 700;">ACN CRM</h2>
+            </div>
+            <button class="menu-toggle" id="mobile-toggle">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">
+                    <i data-lucide="wifi"></i>
+                </div>
+                <div>
+                    <h2 style="font-size: 1rem; font-weight: 700;">ACN Broadband</h2>
+                    <p style="font-size: 0.75rem; color: var(--text-muted);">Mr.OTT Management</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-page="dashboard">
+                    <i data-lucide="layout-dashboard"></i> Dashboard
+                </button>
+                <button class="nav-item" data-page="customers">
+                    <i data-lucide="users"></i> Customers
+                </button>
+                <button class="nav-item" data-page="recharge">
+                    <i data-lucide="credit-card"></i> Recharge Entry
+                </button>
+                <button class="nav-item" data-page="due-tracking">
+                    <i data-lucide="alert-circle"></i> Due Tracking
+                </button>
+                <button class="nav-item" data-page="reports">
+                    <i data-lucide="bar-chart-3"></i> Reports
+                </button>
+            </nav>
+
+            <div class="sidebar-footer" style="padding: 1rem; border-top: 1px solid var(--border);">
+                <div id="user-info" style="margin-bottom: 1rem;">
+                    <p id="user-role" style="font-weight: 600; font-size: 0.875rem;"></p>
+                    <p id="user-name" style="font-size: 0.75rem; color: var(--text-muted);"></p>
+                </div>
+                <button class="nav-item" id="logout-btn" style="color: var(--danger);">
+                    <i data-lucide="log-out"></i> Logout
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h1 id="page-title" style="font-size: 1.5rem;">Dashboard</h1>
+                <div id="header-actions"></div>
+            </header>
+
+            <div id="page-content">
+                <!-- Dynamic content injected here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+</body>
+
+</html>
