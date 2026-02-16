@@ -157,6 +157,47 @@ function calculateStatus(expiryDate) {
     return "Active";
 }
 
+// --- UTILS ---
+function sanitizeCustomerData(store) {
+    if (!store || !store.customers) return false;
+    let wasModified = false;
+    const ids = new Set();
+    const duplicates = [];
+
+    // Find entries with duplicate IDs
+    store.customers.forEach(c => {
+        if (ids.has(c.id)) {
+            duplicates.push(c);
+        } else {
+            ids.add(c.id);
+        }
+    });
+
+    if (duplicates.length > 0) {
+        wasModified = true;
+        let maxNum = 0;
+        store.customers.forEach(c => {
+            const num = parseInt(c.id.replace('ACN', ''));
+            if (!isNaN(num) && num > maxNum) maxNum = num;
+        });
+
+        duplicates.forEach(c => {
+            maxNum++;
+            const oldId = c.id;
+            const newId = "ACN" + maxNum.toString().padStart(3, '0');
+            c.id = newId;
+            console.warn(`Sanitizer: Fixed duplicate ID ${oldId} -> ${newId}`);
+
+            // Note: We don't automatically update recharges here because 
+            // the sanitizer's primary goal is to prevent deletion conflicts.
+            // In a duplicate ID scenario, recharges are usually linked to 
+            // one of the records, but re-linking them safely requires manual check.
+        });
+    }
+
+    return wasModified;
+}
+
 // --- AUTH LAYER ---
 function getCurrentUser() {
     const auth = localStorage.getItem(AUTH_KEY);
