@@ -32,22 +32,27 @@
                 </svg>
             </div>
             <h2 style="font-size: 1.75rem; font-weight: 800; color: var(--primary); margin-bottom: 0.25rem;">Welcome
-                <span style="color: var(--accent);">Back</span></h2>
+                <span style="color: var(--accent);">Back</span>
+            </h2>
             <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 2rem;">ACN Broadband Management
                 Portal</p>
 
-            <div style="text-align: left;">
+            <form id="login-form" style="text-align: left;">
                 <div class="form-group">
                     <label>Username</label>
-                    <input type="text" id="username" placeholder="Enter username">
+                    <input type="text" id="login-username" placeholder="Enter username" required>
                 </div>
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" id="password" placeholder="Enter password">
+                    <input type="password" id="login-password" placeholder="Enter password" required>
                 </div>
-                <button class="btn btn-primary" id="login-btn"
+                <div id="login-error"
+                    style="color: var(--danger); font-size: 0.875rem; margin-bottom: 1rem; display: none; text-align: center;">
+                    Invalid username or password
+                </div>
+                <button type="submit" class="btn btn-primary" id="login-btn"
                     style="width: 100%; padding: 0.875rem; font-size: 1rem; margin-top: 1rem;">Sign In</button>
-            </div>
+            </form>
         </div>
     </div>
 
@@ -90,7 +95,8 @@
                     </svg>
                 </div>
                 <h2 style="font-weight: 800; color: var(--primary); letter-spacing: -0.5px; font-size: 1.25rem;">ACN
-                    <span style="color: var(--warning);">BROADBAND</span></h2>
+                    <span style="color: var(--warning);">BROADBAND</span>
+                </h2>
             </div>
 
             <nav class="sidebar-nav">

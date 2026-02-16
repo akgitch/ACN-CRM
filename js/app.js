@@ -253,18 +253,39 @@ class App {
             </div>
         `;
 
-        document.getElementById('login-form').onsubmit = (e) => {
-            e.preventDefault();
-            this.handleLogin();
-        };
+        // Ensure inputs are mapped correctly even if already in DOM
+        const form = document.getElementById('login-form');
+        if (form) {
+            form.onsubmit = (e) => {
+                e.preventDefault();
+                this.handleLogin();
+            };
+        }
+
+        const loginBtn = document.getElementById('login-btn');
+        if (loginBtn) {
+            loginBtn.onclick = () => {
+                const form = document.getElementById('login-form');
+                if (!form || !form.checkValidity()) return;
+                this.handleLogin();
+            };
+        }
 
         if (window.lucide) lucide.createIcons();
     }
 
     handleLogin() {
-        const userVal = document.getElementById('login-username').value;
-        const passVal = document.getElementById('login-password').value;
+        const userEl = document.getElementById('login-username');
+        const passEl = document.getElementById('login-password');
         const errorEl = document.getElementById('login-error');
+
+        if (!userEl || !passEl) {
+            console.error("Login elements missing!");
+            return;
+        }
+
+        const userVal = userEl.value.trim().toLowerCase();
+        const passVal = passEl.value;
 
         let role = null;
         if (userVal === 'admin' && passVal === 'Admin@4200') {
@@ -277,7 +298,7 @@ class App {
             login(userVal === 'admin' ? 'Admin' : 'Staff', role);
             window.location.reload();
         } else {
-            errorEl.style.display = 'block';
+            if (errorEl) errorEl.style.display = 'block';
         }
     }
 
