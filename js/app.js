@@ -388,13 +388,13 @@ class App {
 
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        const fourDaysAgo = new Date();
-        fourDaysAgo.setDate(today.getDate() - 4);
-        fourDaysAgo.setHours(0, 0, 0, 0);
+        const fourDaysLater = new Date();
+        fourDaysLater.setDate(today.getDate() + 4);
+        fourDaysLater.setHours(23, 59, 59, 999);
 
-        const recentlyExpired = store.customers.filter(c => {
+        const upcomingExpiries = store.customers.filter(c => {
             const expiry = new Date(c.expiryDate);
-            return expiry < today && expiry >= fourDaysAgo;
+            return expiry >= today && expiry <= fourDaysLater;
         });
 
         container.innerHTML = `
@@ -417,10 +417,10 @@ class App {
                 </div>
             </div>
 
-            ${recentlyExpired.length > 0 ? `
-            <div class="card" style="margin-top: 2rem; border-left: 4px solid var(--danger);">
-                <h3 style="margin-bottom: 1rem; color: var(--danger); display: flex; align-items: center; gap: 8px;">
-                    <i data-lucide="alert-triangle" style="width: 20px;"></i> Recently Expired (Last 4 Days)
+            ${upcomingExpiries.length > 0 ? `
+            <div class="card" style="margin-top: 2rem; border-left: 4px solid var(--warning);">
+                <h3 style="margin-bottom: 1rem; color: var(--warning); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="bell" style="width: 20px;"></i> Upcoming Expiries (Next 4 Days)
                 </h3>
                 <div class="table-container">
                     <table>
@@ -429,15 +429,17 @@ class App {
                                 <th>Name</th>
                                 <th>Phone</th>
                                 <th>Expiry Date</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${recentlyExpired.map(c => `
+                            ${upcomingExpiries.map(c => `
                                 <tr>
                                     <td><strong>${c.name}</strong></td>
                                     <td>${c.phone}</td>
                                     <td>${c.expiryDate}</td>
+                                    <td><span class="badge badge-${c.status.toLowerCase().replace(' ', '-')}">${c.status}</span></td>
                                     <td>
                                         <button class="btn btn-sm btn-edit" data-id="${c.id}" style="padding: 4px 8px; font-size: 11px;">View</button>
                                     </td>
@@ -457,8 +459,8 @@ class App {
             </div>
         `;
 
-        // Setup listeners for the new "Recently Expired" View buttons
-        if (recentlyExpired.length > 0) {
+        // Setup listeners for the new "Upcoming Expiries" View buttons
+        if (upcomingExpiries.length > 0) {
             container.querySelectorAll('.btn-edit').forEach(btn => {
                 btn.onclick = (e) => this.renderEditCustomerForm(e.currentTarget.getAttribute('data-id'));
             });
