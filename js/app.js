@@ -215,53 +215,43 @@ class App {
         app.style.display = 'none';
         loginScreen.style.display = 'flex';
 
-        loginScreen.className = 'login-wrapper';
+        loginScreen.style.background = 'radial-gradient(circle at center, #004696, #002d61)';
+        loginScreen.style.minHeight = '100vh';
+        loginScreen.style.alignItems = 'center';
+        loginScreen.style.justifyContent = 'center';
+        loginScreen.style.padding = '1.5rem';
+
         loginScreen.innerHTML = `
-            <div class="card" style="width: 100%; max-width: 400px; padding: 2.5rem; text-align: left;">
-                <div style="text-align: center; margin-bottom: 2rem;">
-                    <div class="logo-icon" style="margin: 0 auto 1rem; width: 48px; height: 48px;">
-                        <i data-lucide="wifi"></i>
-                    </div>
-                    <h1 style="font-size: 1.5rem; margin-bottom: 0.25rem;">Welcome Back</h1>
-                    <p style="color: var(--text-muted);">Login to ACN Broadband CRM</p>
+            <div class="card" style="width: 100%; max-width: 400px; padding: 2.5rem; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+                <div style="width: 64px; height: 64px; margin: 0 auto 1.5rem; background: var(--primary); border-radius: 12px; display: grid; place-items: center; padding: 10px;">
+                    <svg viewBox="0 0 100 100" style="width: 100%; height: 100%;">
+                        <circle cx="50" cy="60" r="32" fill="none" stroke="white" stroke-width="5"/>
+                        <ellipse cx="50" cy="60" rx="12" ry="32" fill="none" stroke="white" stroke-width="5"/>
+                        <line x1="18" y1="60" x2="82" y2="60" stroke="white" stroke-width="5"/>
+                        <path d="M30 35 Q50 15 70 35" fill="none" stroke="#F36F21" stroke-width="8" stroke-linecap="round"/>
+                    </svg>
                 </div>
+                <h2 style="font-size: 1.75rem; font-weight: 800; color: var(--primary); margin-bottom: 0.25rem;">Welcome <span style="color: var(--accent);">Back</span></h2>
+                <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 2rem;">ACN Broadband Management Portal</p>
                 
-                <form id="login-form">
+                <form id="login-form" style="text-align: left;">
                     <div class="form-group">
                         <label>Username</label>
                         <input type="text" id="login-username" placeholder="Enter username" required>
                     </div>
-                    <div class="form-group" style="margin-bottom: 2rem;">
+                    <div class="form-group">
                         <label>Password</label>
                         <input type="password" id="login-password" placeholder="Enter password" required>
                     </div>
                     
-                    <div id="login-error" style="color: var(--danger); font-size: 0.875rem; margin-bottom: 1rem; display: none;">
+                    <div id="login-error" style="color: var(--danger); font-size: 0.875rem; margin-bottom: 1rem; display: none; text-align: center;">
                         Invalid username or password
                     </div>
 
-                    <button type="submit" class="btn btn-primary" style="width: 100%; height: 44px; font-size: 1rem;">
-                        Sign In
-                    </button>
+                    <button type="submit" class="btn btn-primary" id="login-btn" style="width: 100%; padding: 0.875rem; font-size: 1rem; margin-top: 1rem;">Sign In</button>
                 </form>
             </div>
         `;
-
-        const styleId = 'login-style';
-        if (!document.getElementById(styleId)) {
-            const style = document.createElement('style');
-            style.id = styleId;
-            style.textContent = `
-                .login-wrapper {
-                    height: 100vh;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    background: linear-gradient(135deg, var(--primary) 0%, #1e40af 100%);
-                }
-            `;
-            document.head.appendChild(style);
-        }
 
         document.getElementById('login-form').onsubmit = (e) => {
             e.preventDefault();
