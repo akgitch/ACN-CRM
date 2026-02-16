@@ -1,11 +1,13 @@
 :root {
-    /* Colors */
-    --primary: #2563eb;
-    --primary-dark: #1d4ed8;
-    --primary-light: #dbeafe;
+    /* Colors - ACN Broadband Official */
+    --primary: #004696;
+    --primary-dark: #00336d;
+    --primary-light: #eef3f9;
+    --accent: #F36F21;
     --secondary: #64748b;
     --success: #10b981;
-    --warning: #f59e0b;
+    --warning: #F36F21;
+    /* Using Brand Orange for Warning/Caution */
     --danger: #ef4444;
     --background: #f8fafc;
     --surface: #ffffff;
@@ -197,8 +199,8 @@ tr:last-child td {
 }
 
 .badge-due {
-    background: #fef9c3;
-    color: #854d0e;
+    background: #fff3eb;
+    color: var(--accent);
 }
 
 /* Forms */
