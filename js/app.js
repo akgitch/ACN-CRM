@@ -423,7 +423,7 @@ class App {
         });
 
         container.innerHTML = `
-            <div class="stat-grid">
+            <div class="stat-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
                 <div class="card stat-card">
                     <h3>Total Customers</h3>
                     <div class="value">${total}</div>
@@ -435,6 +435,10 @@ class App {
                 <div class="card stat-card">
                     <h3>Expired Customers</h3>
                     <div class="value" style="color: var(--danger);">${expired}</div>
+                </div>
+                <div class="card stat-card" style="border-bottom: 3px solid var(--warning);">
+                    <h3>Expiring Soon</h3>
+                    <div class="value" style="color: var(--warning);">${upcomingExpiries.length}</div>
                 </div>
                 <div class="card stat-card">
                     <h3>Today's Collection</h3>
