@@ -321,7 +321,7 @@ class App {
             const footer = document.querySelector('.sidebar-footer');
             const statusDiv = document.createElement('div');
             statusDiv.id = 'connection-status';
-            statusDiv.style.cssText = 'font-size: 10px; margin-top: 0.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;';
+            statusDiv.className = 'connection-status';
             statusDiv.textContent = 'Connecting...';
             footer.insertBefore(statusDiv, footer.firstChild);
         }
@@ -336,13 +336,21 @@ class App {
         const overlay = document.getElementById('sidebar-overlay');
         const toggleBtn = document.getElementById('mobile-toggle');
 
+        const closeSidebar = () => {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        };
+
         const toggleSidebar = () => {
             sidebar.classList.toggle('open');
             overlay.classList.toggle('active');
         };
 
         toggleBtn.onclick = toggleSidebar;
-        overlay.onclick = toggleSidebar;
+        overlay.onclick = closeSidebar;
+
+        // Store closeSidebar logic for navigation
+        this.closeSidebar = closeSidebar;
     }
 
     setupNavigation() {
@@ -423,7 +431,7 @@ class App {
         });
 
         container.innerHTML = `
-            <div class="stat-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <div class="stat-grid">
                 <div class="card stat-card">
                     <h3>Total Customers</h3>
                     <div class="value">${total}</div>
@@ -447,8 +455,8 @@ class App {
             </div>
 
             ${upcomingExpiries.length > 0 ? `
-            <div class="card" style="margin-top: 2rem; border-left: 4px solid var(--warning);">
-                <h3 style="margin-bottom: 1rem; color: var(--warning); display: flex; align-items: center; gap: 8px;">
+            <div class="card" style="margin-top: var(--space-lg); border-left: 4px solid var(--warning);">
+                <h3 style="margin-bottom: var(--space-sm); color: var(--warning); display: flex; align-items: center; gap: 8px;">
                     <i data-lucide="bell" style="width: 20px;"></i> Upcoming Expiries (Next 4 Days)
                 </h3>
                 <div class="table-container">
@@ -480,9 +488,9 @@ class App {
             </div>
             ` : ''}
 
-            <div class="card" style="margin-top: 2rem;">
-                <h3 style="margin-bottom: 1.5rem;">Daily Collection Chart</h3>
-                <div id="collection-chart" style="height: 300px; display: flex; align-items: flex-end; gap: 10px; padding: 10px;">
+            <div class="card" style="margin-top: var(--space-lg);">
+                <h3 style="margin-bottom: var(--space-md);">Daily Collection Chart</h3>
+                <div id="collection-chart" style="height: 300px; display: flex; align-items: flex-end; gap: clamp(4px, 1vw, 10px); padding: 10px; overflow-x: auto;">
                     ${this.generateChart(store.recharges)}
                 </div>
             </div>
@@ -494,6 +502,7 @@ class App {
                 btn.onclick = (e) => this.renderEditCustomerForm(e.currentTarget.getAttribute('data-id'));
             });
         }
+        if (window.lucide) lucide.createIcons();
     }
 
     generateChart(recharges) {
@@ -524,45 +533,53 @@ class App {
 
     renderCustomers(container, actions) {
         const store = getStore();
-        if (this.user.role === 'Admin') {
-            actions.innerHTML = `<button class="btn btn-primary" id="add-cust-btn">+ Add Customer</button>`;
-            document.getElementById('add-cust-btn').onclick = () => this.renderAddCustomerForm(container);
-        }
+        actions.innerHTML = `
+            <button class="btn btn-primary" id="add-cust-btn">
+                <i data-lucide="user-plus"></i> <span class="hide-mobile">Add Customer</span>
+            </button>
+        `;
+        document.getElementById('add-cust-btn').onclick = () => this.renderAddCustomerForm(container);
 
         container.innerHTML = `
-            <div class="card" style="margin-bottom: 1.5rem;">
-                <div style="display: flex; gap: 1rem;">
-                    <div style="position: relative; flex: 1;">
-                        <input type="text" placeholder="Search by name or ID..." id="cust-search" style="padding-left: 2.5rem;">
-                        <i data-lucide="search" style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); width: 18px; color: var(--text-muted);"></i>
+            <div class="card">
+                <div class="form-row" style="margin-bottom: var(--space-md);">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <div style="position: relative;">
+                            <input type="text" placeholder="Search customers..." id="cust-search" style="padding-left: 2.5rem;">
+                            <i data-lucide="search" style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); width: 18px; color: var(--text-muted);"></i>
+                        </div>
                     </div>
-                    <select id="cust-status-filter" style="width: 200px;">
-                        <option value="">All Statuses</option>
-                        <option value="Active">Active Only</option>
-                        <option value="Expired">Expired Only</option>
-                        <option value="Due Soon">Due Soon</option>
-                    </select>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <select id="cust-status-filter">
+                            <option value="">All Statuses</option>
+                            <option value="Active">Active Only</option>
+                            <option value="Expired">Expired Only</option>
+                            <option value="Due Soon">Due Soon</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="customer-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Plan</th>
+                                <th>Expiry</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customer-table-body">
+                            ${this.renderCustomerRows(store.customers)}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="table-container">
-                <table id="customer-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>Plan</th>
-                            <th>Expiry</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="customer-table-body">
-                        ${this.renderCustomerRows(store.customers)}
-                    </tbody>
-                </table>
-            </div>
         `;
+
+        this.setupCustomerListeners();
         if (window.lucide) lucide.createIcons();
     }
 
@@ -594,9 +611,12 @@ class App {
     }
 
     renderAddCustomerForm(container) {
-        document.getElementById('page-title').textContent = "Add New Customer";
-        document.getElementById('header-actions').innerHTML = `
-            <button class="btn" id="back-to-cust" style="border: 1px solid var(--border);">Cancel</button>
+        document.getElementById('page-title').textContent = 'Add New Customer';
+        const actions = document.getElementById('header-actions');
+        actions.innerHTML = `
+            <button class="btn btn-secondary" id="back-to-cust">
+                <i data-lucide="arrow-left"></i> <span class="hide-mobile">Back</span>
+            </button>
         `;
         document.getElementById('back-to-cust').onclick = () => this.renderPage('customers');
 
@@ -620,7 +640,13 @@ class App {
                     <div class="form-row">
                         <div class="form-group">
                             <label>Initial Plan</label>
-                            <input type="text" id="new-cust-plan" placeholder="e.g. Fiber 50Mbps" required>
+                            <select id="new-cust-plan" required>
+                                <option value="ACN-30MBPS">ACN 30 Mbps</option>
+                                <option value="ACN-50MBPS">ACN 50 Mbps</option>
+                                <option value="ACN-100MBPS">ACN 100 Mbps</option>
+                                <option value="MR-OTT-30MBPS">Mr.OTT 30 Mbps</option>
+                                <option value="MR-OTT-100MBPS">Mr.OTT 100 Mbps</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Plan Price (₹)</label>
@@ -632,7 +658,7 @@ class App {
                             <label>Initial Payment Mode</label>
                             <select id="new-cust-mode">
                                 <option value="Cash">Cash</option>
-                                <option value="UPI">UPI</option>
+                                <option value="UPI">UPI / QR</option>
                                 <option value="Bank">Bank Transfer</option>
                             </select>
                         </div>
@@ -642,18 +668,27 @@ class App {
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Notes (Optional)</label>
-                        <input type="text" id="new-cust-notes" placeholder="Any specific details...">
+                        <label>Additional Notes (Optional)</label>
+                        <textarea id="new-cust-notes" placeholder="Any special instructions..." rows="2"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Create Customer & Activate</button>
+
+                    <div style="margin-top: var(--space-lg); display: flex; gap: var(--space-sm); justify-content: flex-end;">
+                        <button type="button" class="btn btn-secondary" onclick="app.renderPage('customers')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Customer</button>
+                    </div>
                 </form>
             </div>
         `;
 
-        document.getElementById('add-customer-form').onsubmit = (e) => {
-            e.preventDefault();
-            this.handleAddCustomerSubmit();
-        };
+        const form = document.getElementById('add-customer-form');
+        if (form) {
+            form.onsubmit = (e) => {
+                e.preventDefault();
+                this.handleAddCustomerSubmit();
+            };
+        }
+
+        if (window.lucide) lucide.createIcons();
     }
 
     handleAddCustomerSubmit() {
@@ -713,15 +748,22 @@ class App {
     renderCustomerRows(customers) {
         return customers.map(c => `
             <tr>
-                <td><span style="font-family: monospace; font-weight: 600;">${c.id}</span></td>
-                <td>${c.name}</td>
+                <td><span style="font-family: monospace; font-weight: 600; color: var(--primary);">${c.id}</span></td>
+                <td><strong>${c.name}</strong></td>
                 <td>${c.phone}</td>
-                <td>${c.planName} (₹${c.planPrice})</td>
+                <td>${c.planName}</td>
                 <td>${c.expiryDate}</td>
                 <td><span class="badge badge-${c.status.toLowerCase().replace(' ', '-')}">${c.status}</span></td>
                 <td>
-                    <button class="btn btn-sm btn-edit" data-id="${c.id}" style="padding: 4px 8px; font-size: 12px; border: 1px solid var(--border); background: white;">Edit</button>
-                    ${this.user.role === 'Admin' ? `<button class="btn btn-sm btn-delete" data-id="${c.id}" style="color: var(--danger); padding: 4px 8px; font-size: 12px; border: 1px solid var(--border); background: white;">Delete</button>` : ''}
+                    <div style="display: flex; gap: 4px;">
+                        <button class="btn btn-sm btn-edit" data-id="${c.id}" title="Edit">
+                            <i data-lucide="edit-3" style="width: 14px; height: 14px;"></i>
+                        </button>
+                        ${this.user.role === 'Admin' ? `
+                        <button class="btn btn-sm btn-delete btn-danger" data-id="${c.id}" title="Delete" style="padding: 4px 8px;">
+                            <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                        </button>` : ''}
+                    </div>
                 </td>
             </tr>
         `).join('');
@@ -761,7 +803,9 @@ class App {
         const container = document.getElementById('page-content');
         document.getElementById('page-title').textContent = `Edit Customer: ${id}`;
         document.getElementById('header-actions').innerHTML = `
-            <button class="btn" id="back-to-cust" style="border: 1px solid var(--border);">Cancel</button>
+            <button class="btn btn-secondary" id="back-to-cust">
+                <i data-lucide="arrow-left"></i> <span class="hide-mobile">Back</span>
+            </button>
         `;
         document.getElementById('back-to-cust').onclick = () => this.renderPage('customers');
 
@@ -785,7 +829,13 @@ class App {
                     <div class="form-row">
                         <div class="form-group">
                             <label>Current Plan</label>
-                            <input type="text" id="edit-cust-plan" value="${customer.planName}" required>
+                            <select id="edit-cust-plan" required>
+                                <option value="ACN-30MBPS" ${customer.planName === 'ACN-30MBPS' ? 'selected' : ''}>ACN 30 Mbps</option>
+                                <option value="ACN-50MBPS" ${customer.planName === 'ACN-50MBPS' ? 'selected' : ''}>ACN 50 Mbps</option>
+                                <option value="ACN-100MBPS" ${customer.planName === 'ACN-100MBPS' ? 'selected' : ''}>ACN 100 Mbps</option>
+                                <option value="MR-OTT-30MBPS" ${customer.planName === 'MR-OTT-30MBPS' ? 'selected' : ''}>Mr.OTT 30 Mbps</option>
+                                <option value="MR-OTT-100MBPS" ${customer.planName === 'MR-OTT-100MBPS' ? 'selected' : ''}>Mr.OTT 100 Mbps</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Plan Price (₹)</label>
@@ -793,10 +843,14 @@ class App {
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Notes</label>
-                        <input type="text" id="edit-cust-notes" value="${customer.notes || ''}">
+                        <label>Additional Notes</label>
+                        <textarea id="edit-cust-notes" rows="2" placeholder="Any special instructions...">${customer.notes || ''}</textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Update Customer Details</button>
+
+                    <div style="margin-top: var(--space-lg); display: flex; gap: var(--space-sm); justify-content: flex-end;">
+                        <button type="button" class="btn btn-secondary" onclick="app.renderPage('customers')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
                 </form>
             </div>
         `;
@@ -836,10 +890,16 @@ class App {
                             ${store.customers.map(c => `<option value="${c.id}">${c.name} (${c.id})</option>`).join('')}
                         </select>
                     </div>
-                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-row">
                         <div class="form-group">
                             <label>Plan Name</label>
-                            <input type="text" id="rch-plan" placeholder="e.g. Fiber 100Mbps" required>
+                            <select id="rch-plan" required>
+                                <option value="ACN-30MBPS">ACN 30 Mbps</option>
+                                <option value="ACN-50MBPS">ACN 50 Mbps</option>
+                                <option value="ACN-100MBPS">ACN 100 Mbps</option>
+                                <option value="MR-OTT-30MBPS">Mr.OTT 30 Mbps</option>
+                                <option value="MR-OTT-100MBPS">Mr.OTT 100 Mbps</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Amount (₹)</label>
@@ -850,7 +910,7 @@ class App {
                         <label>Payment Mode</label>
                         <select id="rch-mode" required>
                             <option value="Cash">Cash</option>
-                            <option value="UPI">UPI</option>
+                            <option value="UPI">UPI / QR</option>
                             <option value="Bank">Bank Transfer</option>
                         </select>
                     </div>
@@ -858,10 +918,13 @@ class App {
                         <label>Recharge Date</label>
                         <input type="date" id="rch-date" value="${new Date().toISOString().split('T')[0]}" required>
                     </div>
-                    <p style="font-size: 0.825rem; color: var(--text-muted); margin-bottom: 1.5rem;">
-                        Expiry will be auto-calculated to 30 days from now.
+                    <p class="text-muted" style="font-size: var(--font-xs); margin-bottom: var(--space-md);">
+                        <i data-lucide="info" style="width: 14px; vertical-align: middle;"></i>
+                        Expiry will be auto-calculated to 30 days from the selection.
                     </p>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Save Recharge</button>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i data-lucide="credit-card"></i> Process Recharge Payment
+                    </button>
                 </form>
             </div>
         `;
@@ -912,7 +975,7 @@ class App {
         const due = store.customers.filter(c => c.status === 'Due Soon' || c.status === 'Expired');
 
         container.innerHTML = `
-            <div class="stat-grid" style="margin-bottom: 2rem;">
+            <div class="stat-grid">
                 <div class="card stat-card" style="border-left: 4px solid var(--danger);">
                     <h3>Immediate Attention</h3>
                     <div class="value">${due.length}</div>
@@ -935,17 +998,21 @@ class App {
                         ${due.map(c => {
             const today = new Date();
             const expiry = new Date(c.expiryDate);
-            const diffDays = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
+            const whatsappMsg = encodeURIComponent(`Hi ${c.name}, your ACN Broadband plan (${c.planName}) is ${diffDays < 0 ? 'expired' : 'expiring soon'}. Please recharge to enjoy uninterrupted service.`);
             return `
                                 <tr>
                                     <td><strong>${c.name}</strong></td>
                                     <td>${c.phone}</td>
                                     <td>${c.expiryDate}</td>
                                     <td><span class="badge badge-${c.status.toLowerCase().replace(' ', '-')}">${c.status}</span></td>
-                                    <td style="color: ${diffDays < 0 ? 'var(--danger)' : 'var(--warning)'}">${diffDays < 0 ? 'Expired' : diffDays + ' days'}</td>
-                                    <td><button class="btn btn-sm" style="background: #25d366; color: white; display: flex; align-items: center; gap: 4px; border: none; font-size: 11px;">
-                                        <i data-lucide="send" style="width:12px;height:12px;"></i> WhatsApp
-                                    </button></td>
+                                    <td style="color: ${diffDays < 0 ? 'var(--danger)' : 'var(--warning)'}; font-weight: 700;">
+                                        ${diffDays < 0 ? 'EXPIRED' : diffDays + ' days'}
+                                    </td>
+                                    <td>
+                                        <a href="https://wa.me/91${c.phone}?text=${whatsappMsg}" target="_blank" class="btn btn-sm" style="background: #25d366; color: white; display: inline-flex;">
+                                            <i data-lucide="message-square" style="width: 14px; height: 14px;"></i>
+                                        </a>
+                                    </td>
                                 </tr>
                             `;
         }).join('')}
@@ -957,7 +1024,11 @@ class App {
 
     renderReports(container, actions) {
         const store = getStore();
-        actions.innerHTML = `<button class="btn" style="border:1px solid var(--border);">Download CSV</button>`;
+        actions.innerHTML = `
+            <button class="btn btn-secondary" id="export-csv">
+                <i data-lucide="download"></i> <span class="hide-mobile">Export CSV</span>
+            </button>
+        `;
 
         const monthlyCollection = store.recharges.reduce((acc, r) => acc + r.amount, 0);
 
@@ -965,7 +1036,7 @@ class App {
             <div class="stat-grid">
                 <div class="card stat-card">
                     <h3>Monthly Total</h3>
-                    <div class="value">₹${monthlyCollection}</div>
+                    <div class="value" style="color: var(--primary);">₹${monthlyCollection}</div>
                 </div>
                 <div class="card stat-card">
                     <h3>Total Recharges</h3>
@@ -973,8 +1044,8 @@ class App {
                 </div>
             </div>
 
-            <div class="card" style="margin-top:2rem;">
-                <h3 style="margin-bottom:1rem;">Recent Transactions</h3>
+            <div class="card" style="margin-top: var(--space-lg);">
+                <h3 style="margin-bottom: var(--space-md);">Recent Transactions</h3>
                 <div class="table-container">
                     <table>
                         <thead>
@@ -999,6 +1070,30 @@ class App {
                 </div>
             </div>
         `;
+        if (window.lucide) lucide.createIcons();
+    }
+
+    generateChart(recharges) {
+        if (!recharges || recharges.length === 0) return '<p class="text-muted">No data available for chart</p>';
+
+        const last7Days = [...Array(7)].map((_, i) => {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            return d.toISOString().split('T')[0];
+        }).reverse();
+
+        const data = last7Days.map(date => {
+            return recharges.filter(r => r.date === date).reduce((acc, r) => acc + r.amount, 0);
+        });
+
+        const max = Math.max(...data, 1000);
+
+        return data.map((val, i) => `
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                <div class="chart-bar" style="height: ${(val / max) * 200}px; width: 100%; background: var(--primary); border-radius: 4px 4px 0 0; transition: height 0.6s ease; min-height: 2px;"></div>
+                <span style="font-size: 10px; color: var(--text-muted); text-align: center;">${last7Days[i].split('-')[2]}</span>
+            </div>
+        `).join('');
     }
 }
 

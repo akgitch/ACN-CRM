@@ -17,13 +17,10 @@
 </head>
 
 <body>
-    <div id="login-screen" class="login-wrapper"
-        style="display: none; background: radial-gradient(circle at center, #004696, #002d61); min-height: 100vh; position: fixed; inset: 0; z-index: 9999; align-items: center; justify-content: center; padding: 1.5rem;">
-        <div class="card"
-            style="width: 100%; max-width: 400px; padding: 2.5rem; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
-            <div
-                style="width: 64px; height: 64px; margin: 0 auto 1.5rem; background: var(--primary); border-radius: 12px; display: grid; place-items: center; padding: 10px;">
-                <svg viewBox="0 0 100 100" style="width: 100%; height: 100%;">
+    <div id="login-screen" class="login-wrapper" style="display: none;">
+        <div class="card login-card">
+            <div class="brand-logo">
+                <svg viewBox="0 0 100 100">
                     <circle cx="50" cy="60" r="32" fill="none" stroke="white" stroke-width="5" />
                     <ellipse cx="50" cy="60" rx="12" ry="32" fill="none" stroke="white" stroke-width="5" />
                     <line x1="18" y1="60" x2="82" y2="60" stroke="white" stroke-width="5" />
@@ -31,13 +28,10 @@
                         stroke-linecap="round" />
                 </svg>
             </div>
-            <h2 style="font-size: 1.75rem; font-weight: 800; color: var(--primary); margin-bottom: 0.25rem;">Welcome
-                <span style="color: var(--accent);">Back</span>
-            </h2>
-            <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 2rem;">ACN Broadband Management
-                Portal</p>
+            <h2>Welcome <span style="color: var(--accent);">Back</span></h2>
+            <p class="text-muted">ACN Broadband Management Portal</p>
 
-            <form id="login-form" style="text-align: left;">
+            <form id="login-form">
                 <div class="form-group">
                     <label>Username</label>
                     <input type="text" id="login-username" placeholder="Enter username" required>
@@ -46,12 +40,10 @@
                     <label>Password</label>
                     <input type="password" id="login-password" placeholder="Enter password" required>
                 </div>
-                <div id="login-error"
-                    style="color: var(--danger); font-size: 0.875rem; margin-bottom: 1rem; display: none; text-align: center;">
+                <div id="login-error" class="error-msg" style="display: none;">
                     Invalid username or password
                 </div>
-                <button type="submit" class="btn btn-primary" id="login-btn"
-                    style="width: 100%; padding: 0.875rem; font-size: 1rem; margin-top: 1rem;">Sign In</button>
+                <button type="submit" class="btn btn-primary login-btn">Sign In</button>
             </form>
         </div>
     </div>
@@ -60,9 +52,9 @@
         <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
         <div class="mobile-header">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <div style="width: 24px; height: 24px;">
-                    <svg viewBox="0 0 100 100" style="width: 100%; height: 100%;">
+            <div class="mobile-logo">
+                <div class="logo-icon-sm">
+                    <svg viewBox="0 0 100 100">
                         <circle cx="50" cy="60" r="32" fill="none" stroke="var(--primary)" stroke-width="6" />
                         <ellipse cx="50" cy="60" rx="12" ry="32" fill="none" stroke="var(--primary)" stroke-width="6" />
                         <line x1="18" y1="60" x2="82" y2="60" stroke="var(--primary)" stroke-width="6" />
@@ -70,18 +62,17 @@
                             stroke-linecap="round" />
                     </svg>
                 </div>
-                <h2 style="font-size: 0.875rem; font-weight: 700; color: var(--primary);">ACN <span
-                        style="color: var(--warning);">BROADBAND</span></h2>
+                <h2 class="brand-text-sm">ACN <span>BROADBAND</span></h2>
             </div>
-            <button class="menu-toggle" id="mobile-toggle">
+            <button class="menu-toggle" id="mobile-toggle" aria-label="Toggle Menu">
                 <i data-lucide="menu"></i>
             </button>
         </div>
 
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <div class="logo-wrapper" style="width: 40px; height: 40px;">
-                    <svg viewBox="0 0 100 100" style="width: 100%; height: 100%;">
+                <div class="logo-wrapper">
+                    <svg viewBox="0 0 100 100" width="40" height="40">
                         <circle cx="50" cy="60" r="32" fill="none" stroke="var(--primary)" stroke-width="4.5" />
                         <ellipse cx="50" cy="60" rx="12" ry="32" fill="none" stroke="var(--primary)"
                             stroke-width="4.5" />
@@ -94,9 +85,7 @@
                         <circle cx="50" cy="52" r="4" fill="var(--warning)" />
                     </svg>
                 </div>
-                <h2 style="font-weight: 800; color: var(--primary); letter-spacing: -0.5px; font-size: 1.25rem;">ACN
-                    <span style="color: var(--warning);">BROADBAND</span>
-                </h2>
+                <h2 class="brand-text">ACN <span>BROADBAND</span></h2>
             </div>
 
             <nav class="sidebar-nav">
@@ -117,20 +106,20 @@
                 </button>
             </nav>
 
-            <div class="sidebar-footer" style="padding: 1rem; border-top: 1px solid var(--border);">
-                <div id="user-info" style="margin-bottom: 1rem;">
-                    <p id="user-role" style="font-weight: 600; font-size: 0.875rem;"></p>
-                    <p id="user-name" style="font-size: 0.75rem; color: var(--text-muted);"></p>
+            <div class="sidebar-footer">
+                <div id="user-info">
+                    <p id="user-role"></p>
+                    <p id="user-name"></p>
                 </div>
-                <button class="nav-item" id="logout-btn" style="color: var(--danger);">
+                <button class="nav-item logout-item" id="logout-btn">
                     <i data-lucide="log-out"></i> Logout
                 </button>
             </div>
         </aside>
 
         <main class="main-content">
-            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <h1 id="page-title" style="font-size: 1.5rem;">Dashboard</h1>
+            <header class="page-header">
+                <h1 id="page-title">Dashboard</h1>
                 <div id="header-actions"></div>
             </header>
 
